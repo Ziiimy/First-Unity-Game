@@ -19,11 +19,13 @@ public class Bird : MonoBehaviour
     private Rigidbody2D rg;
 
     public GameObject boom;
+    private BirdTrail birdtrail;
     // Start is called before the first frame update
     private void Awake()
     {
         sps = GetComponents<SpringJoint2D>();
         rgs = GetComponents<Rigidbody2D>();
+        birdtrail = GetComponent<BirdTrail>();
     }
     private void OnMouseDown()
     {
@@ -39,7 +41,9 @@ public class Bird : MonoBehaviour
         foreach (Rigidbody2D rg in rgs)
         {
             rg.isKinematic = false;
+            
         }
+
         Invoke("Fly",0.2f);
         LLine.enabled = false;
         RLine.enabled = false;
@@ -67,6 +71,7 @@ public class Bird : MonoBehaviour
         foreach (SpringJoint2D sp in sps)
         {
             sp.enabled = false;
+            birdtrail.Starttrail();
             Invoke("Next", 5);
         }
     }
@@ -86,5 +91,9 @@ public class Bird : MonoBehaviour
         Destroy(gameObject);
         Instantiate(boom, transform.position, Quaternion.identity);
         GameManager._instance.NextBird();
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        birdtrail.Endtrail();
     }
 }
